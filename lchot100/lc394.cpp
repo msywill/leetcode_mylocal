@@ -29,64 +29,82 @@ public:
 
 };
 
+
 class Solution{
 public:
-    string decodeString(string s)
-    {
-        stack<pair<int,string>> st;
-        if(s.size()==1) return s;
-        int num = 0; string res = "";
-        for(int i=0;i<s.size();i++)
-        {
-            if(s[i]>='0'&&s[i]<='9')
-            {
-                num = num*10;
-                num += s[i]-'0';
-            }
-            else if(s[i] == '['){
-                st.push(make_pair(num,res));
-                num = 0;
-                res = "";
-            }
-            else if(s[i] == ']'){
-                int multi = st.top().first;
-                string pre = st.top().second;
-                st.pop();
-                for(int i=0;i<multi;i++){
-                   pre =  pre + res;
+    string decodeString(string s) {
+        stack<string> st;
+        for(int i = 0; i<s.size(); i++){
+
+            if(s[i]>='0'&& s[i]<='9'){
+                int t = i;
+                while(s[i]!='['){
+                    i++;
                 }
-                res = pre;
+
+                string tmp1 = s.substr(t,i-t);
+                st.push(tmp1);
+                //跳出循环时i指向[
+            }//此时需要再次判断一下i
+            if(s[i] == '[')
+            {
+                st.push("["); //左括号进st ， 进入下一次循环
             }
-            else{
-                res += s[i];
+            if(s[i]>='a' && s[i]<='z'){
+                int t = i;
+                while(s[i]>='a' && s[i]<='z'){
+                    i++;
+                }//s[i] 为非字母的时候跳出
+                string tmp = s.substr(t,i-t); // 字符串压栈 跳出while的时候 i为 [ 或 ]
+                st.push(tmp);
+                i = i-1;//回退一步来到最后一个字母 进入下一次循环后检查是否为 [
+            }
+            if(s[i] == ']'){
+                string str;
+                vector<string> tmp;
+                while(st.top()!="["){
+                    tmp.emplace_back(st.top());
+                    st.pop();
+                }
+                for(int i = tmp.size()-1;i>=0;i--)
+                {
+                    str += tmp[i];
+                }
+                st.pop();
+                int k = stoi(st.top());
+                st.pop();
+                string ans;
+                for(int i=0;i<k;i++)
+                {
+                    ans += str;
+                }
+                st.push(ans);
             }
 
         }
+        string res;
+        while(!st.empty())
+        {
+           res = st.top()+res;
+            st.pop();
+        }
+       // reverse(res.begin(),res.end());
         return res;
-
     }
 
 };
 
+
 int  main()
 {
-//    TreeNode mynode;
-//    mynode.data = 2;
-//    mynode.next = NULL;
+
     string input;
     getline(cin,input);
+    class Solution mylocal;
+    string ans = mylocal.decodeString(input);
+    cout<<ans<<endl;
 
 
-    if(input.size()>0)
-    {
-        Solution* new_sol = new Solution();
-        //使用new方法声明的对象需要指针接收
-        //使用完之后需要delete销毁
-        delete new_sol;
-        Solution sol;
-        string ans = sol.decodeString(input);
-        cout<<ans<<endl;
-    }
     return 0;
 
 }
