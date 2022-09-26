@@ -11,3 +11,4 @@ add_executable(lchot100 lchot100/lc27.cpp)
 
 add_executable(lchot100_394 lchot100/lc394.cpp)
 add_executable(lc8 lchot100/lc8.cpp)
+add_executable(lc79 lchot100/lc79.cpp)
